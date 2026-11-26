@@ -3,7 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": { "dev": "vite --host 127.0.0.1", "build": "vite build", "typecheck": "vue-tsc --noEmit" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "typecheck": "vue-tsc --noEmit",
+    "verify:grip": "esbuild scripts/verify-grip.ts --bundle --platform=node --format=esm --outfile=node_modules/.verify-grip.mjs --log-level=warning && node node_modules/.verify-grip.mjs",
+    "verify:flow": "esbuild scripts/verify-flow.ts --bundle --platform=node --format=esm --outfile=node_modules/.verify-flow.mjs --log-level=warning && node node_modules/.verify-flow.mjs"
+  },
   "dependencies": { "vue": "^3.5.24", "lucide-vue-next": "^0.468.0" },
   "devDependencies": { "@vitejs/plugin-vue": "^6.0.2", "@vue/compiler-sfc": "^3.5.24", "typescript": "~5.9.3", "vite": "^7.2.2", "vue-tsc": "^3.1.4" }
 }

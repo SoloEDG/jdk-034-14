@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Activity, ChevronRight, Mountain, Target } from 'lucide-vue-next';
-import { RouteList, WallBoard } from '../features/wall';
+import { RouteList, WallBoard, GripOverlay } from '../features/wall';
 import { ClimberPose, LimbControls, limbNames } from '../features/limbs';
 import { StaminaGauge } from '../features/stamina';
 import { ActionPanel } from '../features/actions';
@@ -9,7 +9,7 @@ import { AttemptList, AttemptReview } from '../features/records';
 import { useChallenge } from './useChallenge';
 
 const {
-  routeId, shownRoute, shownContacts, selected, shownStates, shownBalance, targetMark, locked,
+  routeId, shownRoute, shownContacts, shownGrips, selected, shownStates, shownBalance, targetMark, locked,
   remaining, max, preview, result, target, moves, attempts, active, frame, step, stored,
   start, chooseLimb, chooseHold, execute, open, close, jump,
 } = useChallenge();
@@ -29,6 +29,7 @@ const caption = computed(() => active.value ? '历史记录 · 第 ' + (step.val
     <div class="dashboard">
       <RouteList :active="routeId" :reviewing="Boolean(active)" @choose="start" />
       <WallBoard :route="shownRoute" :states="shownStates" :locked="locked" :caption="caption" @choose="chooseHold" @reset="start(routeId)">
+        <GripOverlay :route="shownRoute" :grips="shownGrips" :plan="frame?.shared ?? preview?.shared ?? null" />
         <template #climber>
           <ClimberPose :route="shownRoute" :contacts="shownContacts" :selected="frame?.move.limb ?? selected"
             :attempted="frame?.failure ? frame.move.target : targetMark?.id" />

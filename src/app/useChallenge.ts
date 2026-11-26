@@ -3,21 +3,27 @@ import type { Limb } from '../shared/types';
 import { holdAt, routes, useWall } from '../features/wall';
 import { balance, useLimbs } from '../features/limbs';
 import { useStamina } from '../features/stamina';
-import { useActions } from '../features/actions';
+import { useActions } from '../features/actions/model/useActions';
 import { useRecords } from '../features/records';
+import { nextGripState } from '../features/actions/lib/settle';
 
 export function useChallenge() {
   const wall = useWall();
   const limbs = useLimbs(wall.route.value.start);
   const stamina = useStamina(wall.route.value.energy);
-  const actions = useActions(wall.route, limbs.contacts, limbs.selected, stamina.remaining);
+  const actions = useActions(wall.route, limbs.contacts, limbs.selected, stamina.remaining, limbs.grips);
   const records = useRecords();
   const shownRoute = computed(() => routes.find(item => item.id === records.active.value?.routeId) ?? wall.route.value);
   const shownContacts = computed(() => {
     const frame = records.frame.value;
     return frame ? (frame.failure ? frame.before : frame.next) : limbs.contacts.value;
   });
-  const shownBalance = computed(() => balance(shownRoute.value, shownContacts.value));
+  const shownGrips = computed(() => {
+    const frame = records.frame.value;
+    if (!frame) return limbs.grips.value;
+    return frame.failure ? (frame.beforeGrips ?? {}) : nextGripState(shownRoute.value, frame.beforeGrips ?? {}, frame);
+  });
+  const shownBalance = computed(() => balance(shownRoute.value, shownContacts.value, undefined, shownGrips.value));
   const targetMark = computed(() => {
     const target = records.frame.value?.move.target ?? actions.target.value;
     return target ? holdAt(shownRoute.value, target) : null;
@@ -44,14 +50,14 @@ export function useChallenge() {
     const move = actions.execute();
     if (!move) return;
     stamina.spend(move.cost);
-    if (!move.failure) limbs.land(move.next);
+    if (!move.failure) limbs.land(move.next, nextGripState(wall.route.value, move.beforeGrips ?? {}, move));
     if (actions.result.value) {
       records.add(wall.route.value.id, actions.result.value, actions.moves.value);
     }
   }
 
   return {
-    ...wall, ...limbs, ...stamina, ...actions, ...records, shownRoute, shownContacts, shownBalance,
-    shownStates, targetMark, locked, start, chooseLimb, execute, chooseHold: actions.choose,
+    ...wall, ...limbs, ...stamina, ...actions, ...records, shownRoute, shownContacts, shownGrips,
+    shownBalance, shownStates, targetMark, locked, start, chooseLimb, execute, chooseHold: actions.choose,
   };
 }

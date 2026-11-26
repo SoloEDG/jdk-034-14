@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-vue-next';
 import type { Attempt, MoveRecord } from '../../../shared/types';
 import { limbNames } from '../../limbs';
 import { failures } from '../../actions';
+import SharedGripPanel from '../../actions/ui/SharedGripPanel.vue';
 
 defineProps<{ attempt: Attempt; frame: MoveRecord; step: number }>();
 defineEmits<{ jump: [index: number]; close: [] }>();
@@ -24,6 +25,7 @@ defineEmits<{ jump: [index: number]; close: [] }>();
       <div><dt>离点支撑余量</dt><dd>{{ frame.support.margin }}</dd></div>
       <div><dt>落点支撑余量</dt><dd>{{ frame.landing.margin }}</dd></div>
     </dl>
+    <SharedGripPanel v-if="frame.shared" :plan="frame.shared" />
     <p v-if="frame.failure" class="action-warning" role="status">{{ failures[frame.failure] }}</p>
   </section>
 </template>

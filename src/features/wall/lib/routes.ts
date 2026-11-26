@@ -1,19 +1,19 @@
 import type { Hold, HoldKind, Route } from '../../../shared/types';
 
-const layout: Array<[string, number, number, HoldKind, number]> = [
+const layout: Array<[string, number, number, HoldKind, number, (-1 | 1)?]> = [
   ['01', 265, 498, 'step', -8], ['02', 390, 494, 'step', 10],
   ['03', 278, 384, 'jug', 18], ['04', 404, 365, 'edge', -15],
   ['05', 178, 351, 'slope', -31], ['06', 342, 424, 'step', 4],
   ['07', 510, 408, 'step', -17], ['08', 337, 295, 'edge', 8],
   ['09', 492, 294, 'jug', -25], ['10', 267, 274, 'jug', 9],
-  ['11', 420, 220, 'slope', 31], ['12', 324, 198, 'jug', -12],
+  ['11', 420, 220, 'slope', 31], ['12', 324, 198, 'jug', -12, -1],
   ['13', 540, 225, 'slope', 18], ['14', 455, 132, 'edge', -12],
-  ['15', 298, 112, 'slope', -24], ['16', 372, 59, 'jug', 7],
+  ['15', 298, 112, 'slope', -24], ['16', 372, 59, 'jug', 7, 1],
   ['17', 373, 340, 'step', -15], ['18', 463, 349, 'step', 20],
   ['19', 370, 234, 'step', 10], ['20', 473, 195, 'step', 9],
 ];
 
-const holds: Hold[] = layout.map(([id, x, y, kind, angle]) => ({ id, x, y, kind, angle }));
+const holds: Hold[] = layout.map(([id, x, y, kind, angle, openSide]) => ({ id, x, y, kind, angle, openSide }));
 const start = { lh: '03', rh: '04', lf: '01', rf: '02' };
 
 export const routes: Route[] = [

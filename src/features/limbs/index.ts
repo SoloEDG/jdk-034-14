@@ -1,4 +1,5 @@
-export { balance, limbNames, limbs } from './lib/support';
+export { balance, limbNames, limbTags, limbs } from './lib/support';
+export type { PartialGrips } from './lib/support';
 export { isHand, measureReach } from './lib/reach';
 export { useLimbs } from './model/useLimbs';
 export { default as LimbControls } from './ui/LimbControls.vue';
